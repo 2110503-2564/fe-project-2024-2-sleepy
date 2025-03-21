@@ -1,5 +1,5 @@
-import getVenues from "@/libs/getVenues";
-import VenueCatalog from "@/components/VenueCatalog";
+import getVenues from "@/libs/getMassageShops";
+import VenueCatalog from "@/components/MSCatalog";
 import { Suspense } from "react";
 import { LinearProgress } from "@mui/material";
 import { VenuesJson } from "../../../../interface"

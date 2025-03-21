@@ -1,4 +1,4 @@
-export interface VenueItem {
+export interface MSItem {
     _id: string,
     name: string,
     address: string,
@@ -6,22 +6,21 @@ export interface VenueItem {
     province: string,
     postalcode: string,
     tel: string,
-    picture: string,
-    dailyrate: number,
-    __v: number,
-    id: string
+    openTime: string,
+    closeTime: number,
+    isActive: boolean
   }
   
-  export interface VenuesJson {
+  export interface MSJson {
     success: boolean,
     count: number,
     pagination: Object,
-    data: VenueItem[]
+    data: MSItem[]
   }
 
   export interface BookingItem {
     nameLastname: string;
     tel: string;
-    venue: string;
+    MassageShop: string;
     bookDate: string;
   }
