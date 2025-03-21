@@ -19,7 +19,7 @@ export default function Banner () {
                 <h3 className='text-xl font-serif'>Our venue offers exceptional banquet services, perfect for any celebration or special event.</h3>
                 <button className='bg-amber-800 text-white border-cyan-600 font-semibold py-2 px-2 m-2 roumded z-30  
                     hover:bg-cyan-600 hover:text-white hover:border-transparent'
-                    onClick={(e) => { e.stopPropagation; router.push('/venue') }}>
+                    onClick={(e) => { e.stopPropagation; router.push('/massageshop') }}>
                 Select Venue
             </button>
             </div>
