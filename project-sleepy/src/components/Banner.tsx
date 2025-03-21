@@ -9,7 +9,7 @@ export default function Banner () {
     const [index, setIndex] = useState(0)
     const router = useRouter()
 
-    //const {data: session} = useSession()
+    const {data: session} = useSession()
 
     return(
         <div className={"block p-[5px] m-0 w-screen h-full"} onClick={()=> { setIndex(index+1)}}>
@@ -24,7 +24,7 @@ export default function Banner () {
             </button>
             </div>
             {
-                //session? <div className='z-30 absolute top-5 right-10 font-semibold text-cyan-800 text-xl'>Hello {session.user?.name}</div> : null
+                session? <div className='z-30 absolute top-5 right-10 font-semibold text-cyan-800 text-xl'>Hello {session.user?.name}</div> : null
             }
             
         </div>
