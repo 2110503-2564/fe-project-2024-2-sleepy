@@ -23,7 +23,7 @@ export default function CardPanel() {
                 {
                     MSResponnse.data.map((MSItem:MSItem) => (
                         <Link key={MSItem._id} href={`/venue/${MSItem._id}`} className="w-1/5">
-                            <Card MSName={MSItem.name} />
+                            <Card MSItem={MSItem} />
                         </Link>
                     ))
                 }
