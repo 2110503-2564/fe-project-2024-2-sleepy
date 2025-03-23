@@ -1,7 +1,6 @@
 import Card from "./Card";
-import Link from "next/link";
 import { MSItem, MSJson } from "../../interface"
-import Banner from "./Banner";
+
 
 export default async function VenueCatalog({MSJson} : {MSJson:Promise<MSJson>}) {
     const MSJsonResult = await MSJson

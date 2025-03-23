@@ -6,7 +6,7 @@ export default function Home() {
     <main className="min-h-screen bg-white">
       {/* Banner Section */}
       <section className="container mx-auto mt-40 px-4">
-        <Homepage />
+        <Homepage/>
       </section>
 
       {/* Popular Right Now */}

@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function Banner() {
+export default function Homepage() {
   return (
     <div className="relative rounded-xl overflow-hidden border-4 border-purple-500">
       <Image
