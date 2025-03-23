@@ -10,10 +10,30 @@ import { AppDispatch } from "../redux/store";
 import { BookingItem } from "../../../interface";
 import { addBooking } from "@/redux/features/bookSlice";
 import Banner from "@/components/Banner";
-
+import { MSItem } from "../../../interface";
+import { useEffect } from "react";
+import getMassageShops from "@/libs/getMassageShops";
 export default function booking() {
+
     const urlParams = useSearchParams()
     const venueName = urlParams.get('name') || ''
+    const [massageShops, setMassageShops] = useState<MSItem[]>([]);
+    const [nameLastname, setNameLastname ] = useState('')
+    const [Contact, setContact ] = useState('')
+    const [venue, setVenue] = useState(venueName)
+    const [bookingDate, setBookingDate] = useState<Dayjs|null>(null)
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const data = await getMassageShops(); // Call API function
+                setMassageShops(data); // Store the response in state
+            } catch (error) {
+                console.error("Error fetching massage shops:", error);
+            }
+        }
+        fetchData();
+    }, []);
 
     const dispatch = useDispatch<AppDispatch>()
 
@@ -30,11 +50,6 @@ export default function booking() {
             dispatch(addBooking(item))
         }
     }
-
-    const [nameLastname, setNameLastname ] = useState('')
-    const [Contact, setContact ] = useState('')
-    const [venue, setVenue] = useState(venueName)
-    const [bookingDate, setBookingDate] = useState<Dayjs|null>(null)
 
     const handleChange = (event: SelectChangeEvent) => {
         setVenue(event.target.value as string);
@@ -64,10 +79,12 @@ export default function booking() {
                 />
 
                 <div className="text-xl font-medium text-black">Place</div>
-                <Select id="venue" className=" h-[2em] w-[200px]" value={venue} onChange={handleChange}>
-                    <MenuItem value='Bloom'>The Bloom Pavilion</MenuItem>
-                    <MenuItem value='Spark'>Spark Space</MenuItem>
-                    <MenuItem value='GrandTable'>The Grand Table</MenuItem>
+                <Select id="massageShop" className=" h-[2em] w-[200px]" value={venue} onChange={handleChange}>
+                    {massageShops.map((shop) => (
+                        <MenuItem key={shop._id} value={shop._id}>
+                            {shop.name}
+                        </MenuItem>
+                    ))}
                 </Select>
                 <div className="w-fit space-y-2">
                     <div className="text-xl font-medium text-black">Date</div>

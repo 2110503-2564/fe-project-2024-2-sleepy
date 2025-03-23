@@ -1,5 +1,6 @@
 import Card from "./Card";
 import { MSItem, MSJson } from "../../interface"
+import booking from "@/app/booking/page";
 
 
 export default async function VenueCatalog({MSJson} : {MSJson:Promise<MSJson>}) {
