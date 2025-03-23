@@ -1,9 +1,19 @@
+"use client";
+
 import Link from "next/link";
 
-export default function TopMenuItem ({title, pageRef} : { title:string, pageRef:string}) {
-    return (
-        <Link href={pageRef} className={"w-[120px] text-center my-auto font-[Verdana,Geneva,Tahoma,sans-serif] text-[12pt] text-black-700"}>
-            {title}
-        </Link>
-    );
+interface Props {
+  title: string;
+  pageRef: string;
+}
+
+export default function TopmenuItem({ title, pageRef }: Props) {
+  return (
+    <Link
+      href={pageRef}
+      className="text-white hover:underline px-2 py-1 text-sm"
+    >
+      {title}
+    </Link>
+  );
 }
