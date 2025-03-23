@@ -7,7 +7,7 @@ import { Link } from '@mui/material'
 export default async function TopMenu() {
     const session = await getServerSession(authOptions)
     return(
-        <div className={"h-[50px] bg-amber-700 fixed top-0 left-0 right-0 z-30 border-t border-b border-amber-800 flex flex-row )"}>
+        <div className={"h-[70px] bg-amber-700 fixed top-0 left-0 right-0 z-30 border-t border-b border-amber-800 flex flex-row )"}>
             <Image src={'/logo/logo.jpg'} className={"h-full w-auto"} alt='logo' width={0} height={0} sizes='100vh'/>
             <TopMenuItem title='Menu Item Booking' pageRef='/booking'/>
             <TopMenuItem title='My Booking' pageRef='/myBooking'/>
