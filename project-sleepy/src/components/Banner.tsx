@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 
 export default function Banner () {
@@ -21,7 +21,7 @@ export default function Banner () {
                     hover:bg-cyan-600 hover:text-white hover:border-transparent'
                     onClick={(e) => { e.stopPropagation; router.push('/massageshop') }}>
                 Select Venue
-            </button>
+                </button>
             </div>
             {
                 session? <div className='z-30 absolute top-5 right-10 font-semibold text-cyan-800 text-xl'>Hello {session.user?.name}</div> : null
