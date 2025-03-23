@@ -24,7 +24,7 @@ export default async function TopMenu() {
             </div>
         </div>
 
-        {/* Middle: Search Form */}
+        /* Middle: Search Form }
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 w-full md:max-w-3xl bg-white p-2 rounded-xl text-black">
           <input className="p-2 rounded border text-sm" placeholder="LOCATION" defaultValue="RAYONG" />
           <input className="p-2 rounded border text-sm" placeholder="DATE" defaultValue="28 dec 2025" />
@@ -33,7 +33,7 @@ export default async function TopMenu() {
           <button className="bg-blue-600 text-white text-sm rounded px-2 py-2">Search</button>
         </div>
 
-        {/* Right: Language + Login/Logout */}
+        {/* Right: Language + Login/Logout }
         <div className="flex items-center gap-3 text-sm whitespace-nowrap">
           <button className="text-white">🌐</button>
           {session ? (
@@ -46,7 +46,7 @@ export default async function TopMenu() {
             </Link>
           )}
         </div>
-      </div>
-    </div>
+      </div> 
+    </div>*/
   );
 }
