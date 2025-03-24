@@ -26,14 +26,20 @@ export default function booking() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const data = await getMassageShops(); // Call API function
-                setMassageShops(data); // Store the response in state
+                const data = await getMassageShops();
+                // Only set state if the component is still mounted
+                if (data && Array.isArray(data)) {
+                    setMassageShops(data);
+                } else {
+                    setMassageShops([]); // Set to empty array in case of invalid data
+                }
             } catch (error) {
                 console.error("Error fetching massage shops:", error);
+                setMassageShops([]); // Handle error gracefully
             }
         }
         fetchData();
-    }, []);
+    }, []);  // Empty dependency array ensures this runs once when the component mounts
 
     const dispatch = useDispatch<AppDispatch>()
 
