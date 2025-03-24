@@ -211,8 +211,8 @@ export default function MSCatalog({ MSJson }: { MSJson: Promise<MSJson> }) {
                             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                             disabled={currentPage === 1}
                             className={`px-4 py-2 border rounded-l-md ${currentPage === 1
-                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'bg-white text-gray-700 hover:bg-gray-50'
                                 }`}
                         >
                             Previous
@@ -223,8 +223,8 @@ export default function MSCatalog({ MSJson }: { MSJson: Promise<MSJson> }) {
                                 key={page}
                                 onClick={() => setCurrentPage(page)}
                                 className={`px-4 py-2 border-t border-b ${currentPage === page
-                                        ? 'bg-orange-500 text-white'
-                                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                                    ? 'bg-orange-500 text-white'
+                                    : 'bg-white text-gray-700 hover:bg-gray-50'
                                     }`}
                             >
                                 {page}
@@ -235,8 +235,8 @@ export default function MSCatalog({ MSJson }: { MSJson: Promise<MSJson> }) {
                             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                             disabled={currentPage === totalPages}
                             className={`px-4 py-2 border rounded-r-md ${currentPage === totalPages
-                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'bg-white text-gray-700 hover:bg-gray-50'
                                 }`}
                         >
                             Next

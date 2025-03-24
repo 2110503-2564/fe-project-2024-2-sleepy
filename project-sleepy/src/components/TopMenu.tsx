@@ -11,6 +11,8 @@ export default function Topmenu() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
+  // console.log(session);
+
   return (
     <>
       <div className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-4 shadow-lg z-50 fixed top-0 left-0 right-0">
@@ -29,9 +31,8 @@ export default function Topmenu() {
               </Link>
               <div className="flex items-center gap-4">
                 <TopmenuItem title="Home" pageRef="/" />
-                <TopmenuItem title="Massage Shops" pageRef="/venue" />
+                <TopmenuItem title="Massage Shops" pageRef="/massageshop" />
                 <TopmenuItem title="Booking" pageRef="/booking" />
-                <TopmenuItem title="Promotion" pageRef="/promotion" />
               </div>
             </div>
 
@@ -59,7 +60,7 @@ export default function Topmenu() {
                 session && (
                   <Link href="/profile" className="flex items-center gap-2 bg-white text-orange-600 px-3 py-2 rounded-lg hover:bg-orange-100 transition-colors">
                     <FaUser />
-                    <span className="font-medium">{session.user?.name}</span>
+                    <span className="font-medium">{session?.user?.data.name}</span>
                   </Link>
                 )
               }
@@ -92,14 +93,11 @@ export default function Topmenu() {
                 <Link href="/" className="text-white hover:bg-white/20 px-3 py-2 rounded-lg transition-colors">
                   Home
                 </Link>
-                <Link href="/venue" className="text-white hover:bg-white/20 px-3 py-2 rounded-lg transition-colors">
+                <Link href="/massageshop" className="text-white hover:bg-white/20 px-3 py-2 rounded-lg transition-colors">
                   Massage Shops
                 </Link>
                 <Link href="/booking" className="text-white hover:bg-white/20 px-3 py-2 rounded-lg transition-colors">
                   Booking
-                </Link>
-                <Link href="/promotion" className="text-white hover:bg-white/20 px-3 py-2 rounded-lg transition-colors">
-                  Promotion
                 </Link>
                 {
                   session ? (

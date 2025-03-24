@@ -23,7 +23,7 @@ export default function Homepage() {
             Book your perfect relaxation experience today !
           </p>
           <div className="flex flex-wrap gap-4">
-            <Link href="/venue" className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg shadow-lg font-semibold flex items-center gap-2 hover:from-orange-600 hover:to-orange-700 transition-colors">
+            <Link href="/massageshop" className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg shadow-lg font-semibold flex items-center gap-2 hover:from-orange-600 hover:to-orange-700 transition-colors">
               Explore Massage Shops <FaArrowRight />
             </Link>
             <Link href="/login" className="bg-white text-orange-600 px-6 py-3 rounded-lg shadow-lg font-semibold hover:bg-orange-50 transition-colors">

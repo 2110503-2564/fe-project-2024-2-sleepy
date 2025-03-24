@@ -1,6 +1,7 @@
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import userLogin from "@/libs/userLogIn";
+import getUserProfile from "@/libs/getUserProfile";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -11,14 +12,23 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials, req) {
-        if (!credentials) return null
-        const user = await userLogin(credentials.email, credentials.password)
+        if (!credentials) return null;
 
-        if (user) {
-          return user
-        } else {
-          return null
+        try {
+          const loginResult = await userLogin(credentials.email, credentials.password);
 
+          if (loginResult && loginResult.token) {
+            const userProfile = await getUserProfile(loginResult.token);
+
+            return {
+              ...loginResult,
+              ...userProfile,
+            };
+          }
+
+          return null;
+        } catch (error) {
+          return null;
         }
       }
     })
