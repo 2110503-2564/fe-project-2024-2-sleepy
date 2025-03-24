@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 
 interface Props {
@@ -9,10 +8,7 @@ interface Props {
 
 export default function TopmenuItem({ title, pageRef }: Props) {
   return (
-    <Link
-      href={pageRef}
-      className="text-white hover:underline px-2 py-1 text-sm"
-    >
+    <Link href={pageRef} className="text-white hover:underline px-2 py-1 text-sm">
       {title}
     </Link>
   );

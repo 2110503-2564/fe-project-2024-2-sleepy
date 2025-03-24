@@ -1,4 +1,4 @@
-export default async function userLogin(userEmail:string, userPassword:string) {
+export default async function userLogin(userEmail: string, userPassword: string) {
     const response = await fetch("https://backendmassageshop.onrender.com/api/v1/auth/login", {
         method: "POST",
         headers: {
@@ -9,10 +9,10 @@ export default async function userLogin(userEmail:string, userPassword:string) {
             password: userPassword
         })
     })
-    if(!response.ok){
+
+    if (!response.ok) {
         throw new Error("Failed to login")
     }
 
     return await response.json()
-
 }

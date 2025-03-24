@@ -1,12 +1,48 @@
 import Image from "next/image";
-export default function Banner({text1, text2} : {text1:string, text2:string}) {
-    return(
-        <div className="block p-1 w-screen h-[700px] relative">
-            <Image src='/Banner/Banner1.jpg' alt='Banner' fill={true} objectFit='cover'/>
-            <div className={"relative top-[250px] z-20 text-center"}>
-                <h1 className='text-6xl font-bold'>{text1}</h1>
-                <h3 className='text-3xl font-medium'>{text2}</h3>
+
+export default function Banner({ text1, text2 }: { text1: string, text2: string }) {
+    return (
+        <div className="relative w-full h-[600px] mb-12 overflow-hidden rounded-xl shadow-xl">
+            <Image
+                src='/Banner/Banner1.jpg'
+                alt='Banner'
+                fill
+                priority
+                className="object-cover object-center brightness-90"
+            />
+
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent"></div>
+
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+                <h1 className="text-6xl md:text-7xl font-bold text-white mb-4">
+                    <span className="relative">
+                        {text1}
+                        <span className="absolute -bottom-2 left-0 w-full h-1 bg-orange-500 rounded-full"></span>
+                    </span>
+                </h1>
+                <h3 className="text-2xl md:text-3xl font-medium text-white max-w-2xl">{text2}</h3>
+
+                <button className="mt-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-8 rounded-lg font-bold text-lg shadow-lg hover:from-orange-600 hover:to-orange-700 transition-all transform hover:scale-105">
+                    Find Your Perfect Massage
+                </button>
+
+                <div className="flex flex-wrap justify-center gap-6 md:gap-12 mt-12">
+                    <div className="text-center text-white">
+                        <div className="text-4xl font-bold text-orange-400">50+</div>
+                        <div className="text-sm opacity-80">MASSAGE SHOPS</div>
+                    </div>
+                    <div className="text-center text-white">
+                        <div className="text-4xl font-bold text-orange-400">5000+</div>
+                        <div className="text-sm opacity-80">HAPPY CUSTOMERS</div>
+                    </div>
+                    <div className="text-center text-white">
+                        <div className="text-4xl font-bold text-orange-400">10+</div>
+                        <div className="text-sm opacity-80">CITIES COVERED</div>
+                    </div>
+                </div>
             </div>
+
+            <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white to-transparent"></div>
         </div>
     );
 }
