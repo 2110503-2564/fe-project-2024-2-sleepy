@@ -14,7 +14,16 @@ export interface MSItem {
 export interface MSJson {
   success: boolean,
   count: number,
-  pagination: Object,
+  pagination: {
+    next: {
+      page: number,
+      limit: number
+    },
+    prev: {
+      page: number,
+      limit: number
+    }
+  },
   data: MSItem[]
 }
 

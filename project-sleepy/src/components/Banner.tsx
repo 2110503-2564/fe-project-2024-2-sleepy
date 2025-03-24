@@ -25,21 +25,6 @@ export default function Banner({ text1, text2 }: { text1: string, text2: string 
                 <button className="mt-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-8 rounded-lg font-bold text-lg shadow-lg hover:from-orange-600 hover:to-orange-700 transition-all transform hover:scale-105">
                     Find Your Perfect Massage
                 </button>
-
-                <div className="flex flex-wrap justify-center gap-6 md:gap-12 mt-12">
-                    <div className="text-center text-white">
-                        <div className="text-4xl font-bold text-orange-400">50+</div>
-                        <div className="text-sm opacity-80">MASSAGE SHOPS</div>
-                    </div>
-                    <div className="text-center text-white">
-                        <div className="text-4xl font-bold text-orange-400">5000+</div>
-                        <div className="text-sm opacity-80">HAPPY CUSTOMERS</div>
-                    </div>
-                    <div className="text-center text-white">
-                        <div className="text-4xl font-bold text-orange-400">10+</div>
-                        <div className="text-sm opacity-80">CITIES COVERED</div>
-                    </div>
-                </div>
             </div>
 
             <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white to-transparent"></div>

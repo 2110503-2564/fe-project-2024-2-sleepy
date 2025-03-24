@@ -2,11 +2,12 @@
 import { useState, useEffect } from 'react';
 import Card from "./Card";
 import { MSItem, MSJson } from "../../interface";
-import { FaSearch, FaFilter, FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
+import { FaSearch, FaFilter, FaSortAmountDown, FaSortAmountUp, FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import getMassageShops from "@/libs/getMassageShops";
 
-export default function MSCatalog({ MSJson }: { MSJson: Promise<MSJson> }) {
-    const [msData, setMsData] = useState<MSJson | null>(null);
-    const [loading, setLoading] = useState(true);
+export default function MSCatalog({ initialData }: { initialData: MSJson }) {
+    const [msData, setMsData] = useState<MSJson>(initialData);
+    const [loading, setLoading] = useState(false);
     const [filter, setFilter] = useState("");
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filteredItems, setFilteredItems] = useState<MSItem[]>([]);
@@ -14,26 +15,33 @@ export default function MSCatalog({ MSJson }: { MSJson: Promise<MSJson> }) {
     const [showFilters, setShowFilters] = useState(false);
     const [provinceFilter, setProvinceFilter] = useState<string | null>(null);
     const [isActiveFilter, setIsActiveFilter] = useState<boolean | null>(null);
-
-    const itemsPerPage = 5;
+    const [isClientFiltering, setIsClientFiltering] = useState(false);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const result = await MSJson;
-                setMsData(result);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching massage shop data:", error);
-                setLoading(false);
+        setFilteredItems(initialData.data);
+    }, [initialData]);
+
+    useEffect(() => {
+        const fetchDataForPage = async () => {
+            if (!isClientFiltering) {
+                try {
+                    setLoading(true);
+                    const result = await getMassageShops(currentPage);
+                    setMsData(result);
+                } catch (error) {
+                    console.error("Error fetching massage shop data:", error);
+                } finally {
+                    setLoading(false);
+                }
             }
         };
 
-        fetchData();
-    }, [MSJson]);
+        fetchDataForPage();
+    }, [currentPage, isClientFiltering]);
 
     useEffect(() => {
-        if (!msData) return;
+        const isFiltering = !!filter || provinceFilter !== null || isActiveFilter !== null;
+        setIsClientFiltering(isFiltering);
 
         let result = [...msData.data];
 
@@ -63,16 +71,29 @@ export default function MSCatalog({ MSJson }: { MSJson: Promise<MSJson> }) {
         });
 
         setFilteredItems(result);
-        setCurrentPage(1);
     }, [msData, filter, sortOrder, provinceFilter, isActiveFilter]);
 
-    const totalPages = msData ? Math.ceil(filteredItems.length / itemsPerPage) : 0;
-    const currentItems = filteredItems.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
-
     const provinces = msData ? Array.from(new Set(msData.data.map(item => item.province))) : [];
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (msData.pagination && msData.pagination.next && !isClientFiltering) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const clearFilters = () => {
+        setFilter("");
+        setProvinceFilter(null);
+        setIsActiveFilter(null);
+        setIsClientFiltering(false);
+        setCurrentPage(1);
+    };
 
     if (loading) {
         return (
@@ -82,13 +103,10 @@ export default function MSCatalog({ MSJson }: { MSJson: Promise<MSJson> }) {
         );
     }
 
-    if (!msData) {
-        return (
-            <div className="text-center py-10 text-red-500">
-                <p>Unable to load massage shop data. Please try again later.</p>
-            </div>
-        );
-    }
+    const displayItems = isClientFiltering ? filteredItems : msData.data;
+
+    const hasNextPage = msData.pagination && msData.pagination.next && !isClientFiltering;
+    const hasPrevPage = currentPage > 1;
 
     return (
         <div className="text-black max-w-6xl mx-auto px-4">
@@ -178,24 +196,35 @@ export default function MSCatalog({ MSJson }: { MSJson: Promise<MSJson> }) {
                 )}
             </div>
 
-            <div className="mb-4 text-gray-600">
-                Showing {currentItems.length} of {filteredItems.length} massage shops
+            <div className="mb-4 text-gray-600 flex justify-between items-center">
+                <div>
+                    {isClientFiltering ? (
+                        <>Showing {displayItems.length} of {msData.data.length} massage shops</>
+                    ) : (
+                        <>Showing page {currentPage} ( {displayItems.length} shops )</>
+                    )}
+                </div>
+
+                {isClientFiltering && displayItems.length !== msData.data.length && (
+                    <button
+                        onClick={clearFilters}
+                        className="text-orange-500 hover:text-orange-600 font-medium"
+                    >
+                        Clear all filters
+                    </button>
+                )}
             </div>
 
             <div className="space-y-4">
-                {currentItems.length > 0 ? (
-                    currentItems.map((MSItem) => (
+                {displayItems.length > 0 ? (
+                    displayItems.map((MSItem) => (
                         <Card key={MSItem._id} MSItem={MSItem} />
                     ))
                 ) : (
                     <div className="text-center py-8 bg-white rounded-lg shadow-md">
                         <div className="text-gray-500 text-lg">No massage shops found matching your criteria</div>
                         <button
-                            onClick={() => {
-                                setFilter("");
-                                setProvinceFilter(null);
-                                setIsActiveFilter(null);
-                            }}
+                            onClick={clearFilters}
                             className="mt-4 text-orange-500 hover:text-orange-600 font-medium"
                         >
                             Clear all filters
@@ -204,46 +233,33 @@ export default function MSCatalog({ MSJson }: { MSJson: Promise<MSJson> }) {
                 )}
             </div>
 
-            {totalPages > 1 && (
-                <div className="flex justify-center mt-8">
-                    <div className="flex rounded-md">
-                        <button
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                            disabled={currentPage === 1}
-                            className={`px-4 py-2 border rounded-l-md ${currentPage === 1
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'bg-white text-gray-700 hover:bg-gray-50'
-                                }`}
-                        >
-                            Previous
-                        </button>
+            <div className="flex justify-between items-center mt-8 bg-white p-4 rounded-lg shadow-sm">
+                <button
+                    onClick={handlePrevPage}
+                    disabled={!hasPrevPage || loading}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${!hasPrevPage || loading
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                        }`}
+                >
+                    <FaArrowLeft /> Previous
+                </button>
 
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                            <button
-                                key={page}
-                                onClick={() => setCurrentPage(page)}
-                                className={`px-4 py-2 border-t border-b ${currentPage === page
-                                    ? 'bg-orange-500 text-white'
-                                    : 'bg-white text-gray-700 hover:bg-gray-50'
-                                    }`}
-                            >
-                                {page}
-                            </button>
-                        ))}
-
-                        <button
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                            disabled={currentPage === totalPages}
-                            className={`px-4 py-2 border rounded-r-md ${currentPage === totalPages
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'bg-white text-gray-700 hover:bg-gray-50'
-                                }`}
-                        >
-                            Next
-                        </button>
-                    </div>
+                <div className="text-gray-600 font-medium">
+                    Page {currentPage}
                 </div>
-            )}
+
+                <button
+                    onClick={handleNextPage}
+                    disabled={!hasNextPage || loading}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${!hasNextPage || loading
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                        }`}
+                >
+                    Next <FaArrowRight />
+                </button>
+            </div>
         </div>
     );
 }
