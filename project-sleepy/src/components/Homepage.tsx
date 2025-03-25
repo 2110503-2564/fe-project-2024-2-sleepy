@@ -1,8 +1,12 @@
+'use client';
 import Image from "next/image";
 import Link from "next/link";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight, FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
+import { useSession } from "next-auth/react";
 
 export default function Homepage() {
+  const { data: session } = useSession();
+
   return (
     <div className="relative rounded-xl overflow-hidden shadow-2xl border-4 border-yellow-500">
       <div className="relative w-full h-[500px]">
@@ -25,9 +29,6 @@ export default function Homepage() {
           <div className="flex flex-wrap gap-4">
             <Link href="/massageshop" className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg shadow-lg font-semibold flex items-center gap-2 hover:from-orange-600 hover:to-orange-700 transition-colors">
               Explore Massage Shops <FaArrowRight />
-            </Link>
-            <Link href="/login" className="bg-white text-orange-600 px-6 py-3 rounded-lg shadow-lg font-semibold hover:bg-orange-50 transition-colors">
-              Sign In
             </Link>
           </div>
         </div>

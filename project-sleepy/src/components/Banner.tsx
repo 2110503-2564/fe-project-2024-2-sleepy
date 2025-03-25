@@ -20,7 +20,7 @@ export default function Banner({ text1, text2 }: { text1: string, text2: string 
                         <span className="absolute -bottom-2 left-0 w-full h-1 bg-orange-500 rounded-full"></span>
                     </span>
                 </h1>
-                <h3 className="text-2xl md:text-3xl font-medium text-white max-w-2xl">{text2}</h3>
+                <h3 className="text-2xl md:text-3xl font-medium text-white text-center mx-auto whitespace-nowrap">{text2}</h3>
 
                 <button className="mt-8 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-8 rounded-lg font-bold text-lg shadow-lg hover:from-orange-600 hover:to-orange-700 transition-all transform hover:scale-105">
                     Find Your Perfect Massage

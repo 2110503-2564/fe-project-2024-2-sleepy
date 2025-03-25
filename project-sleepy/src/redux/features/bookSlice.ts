@@ -18,10 +18,8 @@ export const bookSlice = createSlice({
             );
 
             if (index !== -1) {
-                // Replace the existing booking with the new one
                 state.bookItems[index] = action.payload;
             } else {
-                // Add new booking if no match is found
                 state.bookItems.push(action.payload);
             }
         },

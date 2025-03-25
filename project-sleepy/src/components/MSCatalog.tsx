@@ -237,10 +237,8 @@ export default function MSCatalog({ initialData }: { initialData: MSJson }) {
                 <button
                     onClick={handlePrevPage}
                     disabled={!hasPrevPage || loading}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${!hasPrevPage || loading
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                        }`}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors 
+                        ${!hasPrevPage || loading ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
                 >
                     <FaArrowLeft /> Previous
                 </button>
@@ -252,10 +250,8 @@ export default function MSCatalog({ initialData }: { initialData: MSJson }) {
                 <button
                     onClick={handleNextPage}
                     disabled={!hasNextPage || loading}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${!hasNextPage || loading
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                        }`}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors 
+                        ${!hasNextPage || loading ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
                 >
                     Next <FaArrowRight />
                 </button>

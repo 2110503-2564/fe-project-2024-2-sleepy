@@ -4,12 +4,11 @@ import TopmenuItem from "./TopMenuItem";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { FaSearch, FaUser, FaSignOutAlt, FaSignInAlt, FaBars, FaTimes } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaSignInAlt, FaBars, FaTimes } from "react-icons/fa";
 
 export default function Topmenu() {
   const { data: session } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
 
   // console.log(session);
 
@@ -37,12 +36,6 @@ export default function Topmenu() {
             </div>
 
             <div className="flex items-center gap-4">
-              <button
-                onClick={() => setSearchOpen(!searchOpen)}
-                className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
-              >
-                <FaSearch className="text-lg" />
-              </button>
               {
                 session ? (
                   <Link href="/signout" className="flex items-center gap-2 bg-white/20 hover:bg-white/30 px-3 py-2 rounded-lg transition-colors">
@@ -119,22 +112,6 @@ export default function Topmenu() {
             )
           }
         </div>
-
-        {
-          searchOpen && (
-            <div className="container mx-auto mt-3 bg-white rounded-xl p-3 shadow-lg animate-fadeDown">
-              <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
-                <input className="p-2 rounded border border-gray-300 text-black text-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all" placeholder="LOCATION" defaultValue="RAYONG" />
-                <input className="p-2 rounded border border-gray-300 text-black text-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all" placeholder="DATE" defaultValue="28 dec 2025" />
-                <input className="p-2 rounded border border-gray-300 text-black text-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all" placeholder="TIME" defaultValue="12:00" />
-                <input className="p-2 rounded border border-gray-300 text-black text-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all" placeholder="STAR" defaultValue="4-5 STAR" />
-                <button className="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-sm font-medium rounded px-4 py-2 hover:from-orange-600 hover:to-orange-700 transition-all shadow">
-                  <FaSearch className="inline mr-2" /> Find Massage
-                </button>
-              </div>
-            </div>
-          )
-        }
       </div>
       <div className="w-full h-16 bg-white"></div>
     </>

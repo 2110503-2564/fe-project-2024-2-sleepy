@@ -3,19 +3,33 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaUser, FaEnvelope, FaPhone, FaIdCard, FaUserTag, FaCalendarAlt } from 'react-icons/fa';
+import { FaEnvelope, FaPhone, FaIdCard, FaUserTag, FaCalendarAlt, FaTrash } from 'react-icons/fa';
 import { useAppSelector } from '@/redux/store';
+import { useDispatch } from 'react-redux';
+import { removeBooking } from '@/redux/features/bookSlice';
+import { BookingItem } from '../../../interface';
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
+  const [cancellingId, setCancellingId] = useState<number | null>(null);
   const bookings = useAppSelector((state) => state.bookSlice.bookItems);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (status !== 'loading') {
       setLoading(false);
     }
   }, [status]);
+
+  const handleCancelBooking = (booking: BookingItem, index: number) => {
+    setCancellingId(index);
+
+    setTimeout(() => {
+      dispatch(removeBooking(booking));
+      setCancellingId(null);
+    }, 500);
+  };
 
   if (loading) {
     return (
@@ -57,7 +71,7 @@ export default function ProfilePage() {
               <div className="bg-white p-2 rounded-full shadow-lg">
                 <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white">
                   <Image
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(userData?.name || 'User')}&background=000001&color=ffffff&size=128`}
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(userData?.name || 'User')}&background=f97316&color=ffffff&size=128`}
                     alt="Profile"
                     fill
                     className="object-cover"
@@ -118,8 +132,6 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </div>
-
-
               </div>
 
               <div>
@@ -127,31 +139,53 @@ export default function ProfilePage() {
                 {
                   bookings.length > 0 ? (
                     <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
-                      {bookings.map((booking, index) => (
-                        <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h3 className="font-semibold text-gray-800">{booking.MassageShop}</h3>
-                              <div className="flex items-center mt-1 text-sm text-gray-500">
-                                <FaCalendarAlt className="mr-2 text-orange-500" />
-                                <span>{booking.bookDate}</span>
+                      {
+                        bookings.map((booking, index) => (
+                          <div
+                            key={index}
+                            className={`bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all ${cancellingId === index ? 'opacity-50 scale-95' : ''
+                              }`}
+                          >
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h3 className="font-semibold text-gray-800">{booking.MassageShop}</h3>
+                                <div className="flex items-center mt-1 text-sm text-gray-500">
+                                  <FaCalendarAlt className="mr-2 text-orange-500" />
+                                  <span>{booking.bookDate}</span>
+                                </div>
+                              </div>
+                              <div className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded">
+                                Active
                               </div>
                             </div>
-                            <div className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded">
-                              Active
+                            <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
+                              <div className="text-sm text-gray-600">
+                                <span className="block">{booking.nameLastname}</span>
+                                <span className="block">{booking.tel}</span>
+                              </div>
+                              <button
+                                className="flex items-center gap-1 px-2 py-1 text-xs bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600 rounded transition-colors"
+                                onClick={() => handleCancelBooking(booking, index)}
+                                disabled={cancellingId === index}
+                              >
+                                {cancellingId === index ? (
+                                  <span className="flex items-center">
+                                    <svg className="animate-spin -ml-1 mr-2 h-3 w-3 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Cancelling...
+                                  </span>
+                                ) : (
+                                  <>
+                                    <FaTrash size={12} /> Cancel
+                                  </>
+                                )}
+                              </button>
                             </div>
                           </div>
-                          <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
-                            <div className="text-sm text-gray-600">
-                              <span className="block">{booking.nameLastname}</span>
-                              <span className="block">{booking.tel}</span>
-                            </div>
-                            <button className="text-xs text-red-500 hover:text-red-600">
-                              Cancel
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                        ))
+                      }
                     </div>
                   ) : (
                     <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">

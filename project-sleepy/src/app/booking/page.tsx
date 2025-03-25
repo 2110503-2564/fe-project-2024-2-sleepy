@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { TextField, MenuItem, FormControl, InputLabel, Select, FormHelperText, Alert, Button, CircularProgress } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../redux/store";
+import { AppDispatch } from "@/redux/store";
 import { MSItem, BookingItem } from "../../../interface";
 import { addBooking } from "@/redux/features/bookSlice";
 import Link from "next/link";
@@ -326,7 +326,7 @@ export default function BookingPage() {
                                     {bookingDate && (
                                         <div className="border-b border-gray-200 pb-3">
                                             <div className="text-sm text-gray-500">Selected Date & Time</div>
-                                            <div className="font-medium">
+                                            <div className="font-medium text-stone-600">
                                                 {dayjs(bookingDate).format("DD MMMM YYYY, HH:mm")}
                                             </div>
                                         </div>
