@@ -1,5 +1,5 @@
 export default async function getReservations(token: string) {
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const response = await fetch('https://backendmassageshop.onrender.com/api/v1/reservations', {
         method: 'GET',

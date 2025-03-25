@@ -27,22 +27,34 @@ export default function AdminPage() {
 
         setLoading(true);
         try {
-            const shopsResponse: MSJson = await getMassageShops(1);
+            let allShops: MSItem[] = [];
+            let currentPage = 1;
+            let hasNextPage = true;
+
+            while (hasNextPage) {
+                const shopsResponse: MSJson = await getMassageShops(currentPage);
+
+                if (shopsResponse && shopsResponse.data) {
+                    allShops = [...allShops, ...shopsResponse.data];
+
+                    hasNextPage = !!shopsResponse.pagination?.next;
+                    currentPage++;
+                } else {
+                    break;
+                }
+            }
 
             const reservationsResponse = await getReservations(session.user.token);
 
-            if (shopsResponse && shopsResponse.data) {
-                const totalShops = shopsResponse.data.length;
-                const activeShops = shopsResponse.data.filter((shop: MSItem) => shop.isActive).length;
+            const totalShops = allShops.length;
+            const activeShops = allShops.filter((shop: MSItem) => shop.isActive).length;
+            const totalBookings = reservationsResponse?.data?.length || 0;
 
-                const totalBookings = reservationsResponse?.data?.length || 0;
-
-                setStatsData({
-                    shops: totalShops,
-                    bookings: totalBookings,
-                    activeShops: activeShops
-                });
-            }
+            setStatsData({
+                shops: totalShops,
+                bookings: totalBookings,
+                activeShops: activeShops
+            });
         } catch (error) {
             console.error("Error fetching dashboard data:", error);
         } finally {
