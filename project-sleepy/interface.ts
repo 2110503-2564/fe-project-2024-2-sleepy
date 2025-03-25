@@ -32,4 +32,5 @@ export interface BookingItem {
   tel: string;
   MassageShop: string;
   bookDate: string;
+  reservationID: string;
 }

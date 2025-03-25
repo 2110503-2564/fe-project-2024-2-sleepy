@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import { useState, useEffect } from 'react';
 import Card from "./Card";
 import { MSItem, MSJson } from "../../interface";
@@ -141,78 +141,84 @@ export default function MSCatalog({ initialData }: { initialData: MSJson }) {
                     </div>
                 </div>
 
-                {showFilters && (
-                    <div className="mt-4 p-4 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Province</label>
-                            <select
-                                value={provinceFilter || ''}
-                                onChange={(e) => setProvinceFilter(e.target.value || null)}
-                                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-200 focus:border-orange-500 outline-none"
-                            >
-                                <option value="">All Provinces</option>
-                                {provinces.map((province) => (
-                                    <option key={province} value={province}>{province}</option>
-                                ))}
-                            </select>
-                        </div>
+                {
+                    showFilters && (
+                        <div className="mt-4 p-4 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Province</label>
+                                <select
+                                    value={provinceFilter || ''}
+                                    onChange={(e) => setProvinceFilter(e.target.value || null)}
+                                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-200 focus:border-orange-500 outline-none"
+                                >
+                                    <option value="">All Provinces</option>
+                                    {provinces.map((province) => (
+                                        <option key={province} value={province}>{province}</option>
+                                    ))}
+                                </select>
+                            </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                            <div className="flex gap-3">
-                                <label className="inline-flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="statusFilter"
-                                        checked={isActiveFilter === null}
-                                        onChange={() => setIsActiveFilter(null)}
-                                        className="form-radio h-4 w-4 text-orange-500"
-                                    />
-                                    <span className="ml-2">All</span>
-                                </label>
-                                <label className="inline-flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="statusFilter"
-                                        checked={isActiveFilter === true}
-                                        onChange={() => setIsActiveFilter(true)}
-                                        className="form-radio h-4 w-4 text-orange-500"
-                                    />
-                                    <span className="ml-2">Active</span>
-                                </label>
-                                <label className="inline-flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="statusFilter"
-                                        checked={isActiveFilter === false}
-                                        onChange={() => setIsActiveFilter(false)}
-                                        className="form-radio h-4 w-4 text-orange-500"
-                                    />
-                                    <span className="ml-2">Inactive</span>
-                                </label>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <div className="flex gap-3">
+                                    <label className="inline-flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="statusFilter"
+                                            checked={isActiveFilter === null}
+                                            onChange={() => setIsActiveFilter(null)}
+                                            className="form-radio h-4 w-4 text-orange-500"
+                                        />
+                                        <span className="ml-2">All</span>
+                                    </label>
+                                    <label className="inline-flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="statusFilter"
+                                            checked={isActiveFilter === true}
+                                            onChange={() => setIsActiveFilter(true)}
+                                            className="form-radio h-4 w-4 text-orange-500"
+                                        />
+                                        <span className="ml-2">Active</span>
+                                    </label>
+                                    <label className="inline-flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="statusFilter"
+                                            checked={isActiveFilter === false}
+                                            onChange={() => setIsActiveFilter(false)}
+                                            className="form-radio h-4 w-4 text-orange-500"
+                                        />
+                                        <span className="ml-2">Inactive</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
             </div>
 
             <div className="mb-4 text-gray-600 flex justify-between items-center">
                 <div>
-                    {isClientFiltering ? (
-                        <>Showing {displayItems.length} of {msData.data.length} massage shops</>
-                    ) : (
-                        <>Showing page {currentPage} ( {displayItems.length} shops )</>
-                    )}
+                    {
+                        isClientFiltering ? (
+                            <>Showing {displayItems.length} of {msData.data.length} massage shops</>
+                        ) : (
+                            <>Showing page {currentPage} ( {displayItems.length} shops )</>
+                        )
+                    }
                 </div>
 
-                {isClientFiltering && displayItems.length !== msData.data.length && (
-                    <button
-                        onClick={clearFilters}
-                        className="text-orange-500 hover:text-orange-600 font-medium"
-                    >
-                        Clear all filters
-                    </button>
-                )}
+                {
+                    isClientFiltering && displayItems.length !== msData.data.length && (
+                        <button
+                            onClick={clearFilters}
+                            className="text-orange-500 hover:text-orange-600 font-medium"
+                        >
+                            Clear all filters
+                        </button>
+                    )
+                }
             </div>
 
             <div className="space-y-4">

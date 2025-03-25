@@ -8,7 +8,7 @@ export default async function getMassageShops(page: number = 1) {
     });
 
     if (!response.ok) {
-        throw new Error("Failed to fetch Massage Shops");
+        throw new Error('Failed to fetch Massage Shops');
     }
 
     return await response.json();

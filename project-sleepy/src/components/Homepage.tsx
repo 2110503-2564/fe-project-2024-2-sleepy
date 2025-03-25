@@ -1,12 +1,9 @@
-'use client';
+'use client'
 import Image from "next/image";
 import Link from "next/link";
 import { FaArrowRight, FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
-import { useSession } from "next-auth/react";
 
 export default function Homepage() {
-  const { data: session } = useSession();
-
   return (
     <div className="relative rounded-xl overflow-hidden shadow-2xl border-4 border-yellow-500">
       <div className="relative w-full h-[500px]">

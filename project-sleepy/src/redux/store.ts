@@ -1,9 +1,9 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import bookSlice from "./features/bookSlice";
-import { TypedUseSelectorHook, useSelector } from "react-redux";
-import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist"
-import createWebStorage from "redux-persist/lib/storage/createWebStorage";
-import { WebStorage } from "redux-persist/lib/types";
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import bookSlice from './features/bookSlice';
+import { TypedUseSelectorHook, useSelector } from 'react-redux';
+import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
+import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
+import { WebStorage } from 'redux-persist/lib/types';
 
 function createPersistStorage(): WebStorage {
     const isServer = typeof window === 'undefined';
@@ -24,7 +24,7 @@ function createPersistStorage(): WebStorage {
 }
 const storage = createPersistStorage()
 const persistConfig = {
-    key: "rootPersist",
+    key: 'rootPersist',
     storage
 }
 
@@ -42,8 +42,6 @@ export const store = configureStore(
     }
 )
 
-
-
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

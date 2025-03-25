@@ -12,6 +12,7 @@ import Link from "next/link";
 import DateReserve from "@/components/DateReserve";
 import Banner from "@/components/Banner";
 import getMassageShops from "@/libs/getMassageShops";
+import addReservations from "@/libs/addReservations";
 import dayjs, { Dayjs } from "dayjs";
 import { FaCalendarAlt, FaMapMarkerAlt, FaUser, FaPhone, FaCheck } from "react-icons/fa";
 
@@ -49,7 +50,7 @@ export default function BookingPage() {
         async function fetchData() {
             try {
                 setLoading(true);
-                const response = await getMassageShops();
+                const response = await getMassageShops(1);
                 if (response && response.data && Array.isArray(response.data)) {
                     const shops = response.data;
                     setMassageShops(shops);
@@ -124,14 +125,25 @@ export default function BookingPage() {
                 throw new Error("Selected massage shop not found");
             }
 
-            const item: BookingItem = {
+            const bookingItem: BookingItem = {
                 nameLastname: nameLastname.trim(),
                 tel: contact.replace(/-/g, ''),
                 MassageShop: selectedShop._id,
-                bookDate: dayjs(bookingDate).format("YYYY/MM/DD HH:mm")
+                bookDate: dayjs(bookingDate).format("YYYY/MM/DD HH:mm"),
+                reservationID: ''
             };
 
-            dispatch(addBooking(item));
+            if (status === 'authenticated' && session?.user?.token) {
+                const reservDate = dayjs(bookingDate).format("YYYY-MM-DD HH:mm");
+
+                const result = await addReservations(session.user.token, selectedShop._id, reservDate);
+
+                if (result && result.data && result.data._id) {
+                    bookingItem.reservationID = result.data._id;
+                }
+            }
+
+            dispatch(addBooking(bookingItem));
             setSuccess(true);
 
             setTimeout(() => {
@@ -199,7 +211,7 @@ export default function BookingPage() {
                             className="mb-6 animate-fadeDown"
                             icon={<FaCheck />}
                         >
-                            Booking successful! Redirecting to your profile...
+                            Booking successful ! Redirecting to your profile...
                         </Alert>
                     )
                 }
@@ -215,7 +227,6 @@ export default function BookingPage() {
                         </Alert>
                     )
                 }
-
                 <div className="bg-white rounded-xl shadow-lg p-6 md:p-8">
                     <h1 className="text-2xl font-bold text-gray-800 mb-6">New Booking</h1>
 
@@ -265,17 +276,19 @@ export default function BookingPage() {
                                         onChange={handleVenueChange}
                                         startAdornment={<FaMapMarkerAlt className="text-gray-400 mr-2" />}
                                     >
-                                        {massageShops.length === 0 ? (
-                                            <MenuItem disabled value="">
-                                                No shops available
-                                            </MenuItem>
-                                        ) : (
-                                            massageShops.map((shop) => (
-                                                <MenuItem key={shop._id} value={shop._id}>
-                                                    {shop.name}
+                                        {
+                                            massageShops.length === 0 ? (
+                                                <MenuItem disabled value="">
+                                                    No shops available
                                                 </MenuItem>
-                                            ))
-                                        )}
+                                            ) : (
+                                                massageShops.map((shop) => (
+                                                    <MenuItem key={shop._id} value={shop._id}>
+                                                        {shop.name}
+                                                    </MenuItem>
+                                                ))
+                                            )
+                                        }
                                     </Select>
                                     {formErrors.venue && <FormHelperText>Please select a massage shop</FormHelperText>}
                                 </FormControl>
@@ -323,14 +336,16 @@ export default function BookingPage() {
                                         <div className="font-medium text-stone-600">{selectedShop.tel}</div>
                                     </div>
 
-                                    {bookingDate && (
-                                        <div className="border-b border-gray-200 pb-3">
-                                            <div className="text-sm text-gray-500">Selected Date & Time</div>
-                                            <div className="font-medium text-stone-600">
-                                                {dayjs(bookingDate).format("DD MMMM YYYY, HH:mm")}
+                                    {
+                                        bookingDate && (
+                                            <div className="border-b border-gray-200 pb-3">
+                                                <div className="text-sm text-gray-500">Selected Date & Time</div>
+                                                <div className="font-medium text-stone-600">
+                                                    {dayjs(bookingDate).format("DD MMMM YYYY, HH:mm")}
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
+                                        )
+                                    }
                                 </div>
                             ) : (
                                 <div className="text-gray-500 italic">

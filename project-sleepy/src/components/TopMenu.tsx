@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import Image from "next/image";
 import TopmenuItem from "./TopMenuItem";
 import Link from "next/link";
@@ -31,7 +31,6 @@ export default function Topmenu() {
               <div className="flex items-center gap-4">
                 <TopmenuItem title="Home" pageRef="/" />
                 <TopmenuItem title="Massage Shops" pageRef="/massageshop" />
-                <TopmenuItem title="Booking" pageRef="/booking" />
               </div>
             </div>
 
@@ -88,9 +87,6 @@ export default function Topmenu() {
                 </Link>
                 <Link href="/massageshop" className="text-white hover:bg-white/20 px-3 py-2 rounded-lg transition-colors">
                   Massage Shops
-                </Link>
-                <Link href="/booking" className="text-white hover:bg-white/20 px-3 py-2 rounded-lg transition-colors">
-                  Booking
                 </Link>
                 {
                   session ? (

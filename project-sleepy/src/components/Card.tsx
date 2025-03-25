@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import { MSItem } from "../../interface";
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -27,9 +27,11 @@ export default function Card({ MSItem }: { MSItem: MSItem }) {
                 </div>
 
                 <div className="flex items-center mt-1 mb-3">
-                    {stars.map((starClass, index) => (
-                        <FaStar key={index} className={starClass} />
-                    ))}
+                    {
+                        stars.map((starClass, index) => (
+                            <FaStar key={index} className={starClass} />
+                        ))
+                    }
                     <span className="ml-2 text-sm text-gray-600">(24 reviews)</span>
                 </div>
 

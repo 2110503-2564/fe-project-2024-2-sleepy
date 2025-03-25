@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -8,6 +8,7 @@ import { useAppSelector } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import { removeBooking } from '@/redux/features/bookSlice';
 import { BookingItem } from '../../../interface';
+import removeReservation from '@/libs/removeReservation';
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -22,13 +23,22 @@ export default function ProfilePage() {
     }
   }, [status]);
 
-  const handleCancelBooking = (booking: BookingItem, index: number) => {
+  const handleCancelBooking = async (booking: BookingItem, index: number) => {
     setCancellingId(index);
 
-    setTimeout(() => {
+    try {
+      if (status === 'authenticated' && session?.user?.token) {
+        const reservationID = booking.reservationID;
+
+        await removeReservation(session.user.token, reservationID);
+      }
+
       dispatch(removeBooking(booking));
+    } catch (error) {
+      console.error("Error cancelling booking:", error);
+    } finally {
       setCancellingId(null);
-    }, 500);
+    }
   };
 
   if (loading) {
@@ -143,8 +153,8 @@ export default function ProfilePage() {
                         bookings.map((booking, index) => (
                           <div
                             key={index}
-                            className={`bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all ${cancellingId === index ? 'opacity-50 scale-95' : ''
-                              }`}
+                            className={`bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all 
+                              ${cancellingId === index ? 'opacity-50 scale-95' : ''}`}
                           >
                             <div className="flex justify-between items-start">
                               <div>
@@ -168,19 +178,21 @@ export default function ProfilePage() {
                                 onClick={() => handleCancelBooking(booking, index)}
                                 disabled={cancellingId === index}
                               >
-                                {cancellingId === index ? (
-                                  <span className="flex items-center">
-                                    <svg className="animate-spin -ml-1 mr-2 h-3 w-3 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Cancelling...
-                                  </span>
-                                ) : (
-                                  <>
-                                    <FaTrash size={12} /> Cancel
-                                  </>
-                                )}
+                                {
+                                  cancellingId === index ? (
+                                    <span className="flex items-center">
+                                      <svg className="animate-spin -ml-1 mr-2 h-3 w-3 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                      </svg>
+                                      Cancelling...
+                                    </span>
+                                  ) : (
+                                    <>
+                                      <FaTrash size={12} /> Cancel
+                                    </>
+                                  )
+                                }
                               </button>
                             </div>
                           </div>

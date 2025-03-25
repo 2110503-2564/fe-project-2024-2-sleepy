@@ -4,7 +4,7 @@ export default async function getReservations() {
     const response = await fetch('https://backendmassageshop.onrender.com/api/v1/reservations');
 
     if (!response.ok) {
-        throw new Error("Failed to fetch Reservations");
+        throw new Error('Failed to fetch Reservations');
     }
 
     return await response.json();
