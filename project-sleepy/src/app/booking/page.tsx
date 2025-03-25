@@ -4,10 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { TextField, MenuItem, FormControl, InputLabel, Select, FormHelperText, Alert, Button, CircularProgress } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
-import { MSItem, BookingItem } from "../../../interface";
-import { addBooking } from "@/redux/features/bookSlice";
+import { MSItem } from "../../../interface";
 import Link from "next/link";
 import DateReserve from "@/components/DateReserve";
 import Banner from "@/components/Banner";
@@ -36,8 +33,6 @@ export default function BookingPage() {
         venue: false,
         date: false
     });
-
-    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
         if (status === 'authenticated' && session?.user?.data) {
@@ -125,49 +120,17 @@ export default function BookingPage() {
                 throw new Error("Selected massage shop not found");
             }
 
-            const bookingItem: BookingItem = {
-                nameLastname: nameLastname.trim(),
-                tel: contact.replace(/-/g, ''),
-                MassageShop: {
-                    _id: selectedShop._id,
-                    name: selectedShop.name,
-                    address: selectedShop.address,
-                    district: selectedShop.district,
-                    province: selectedShop.province,
-                    postalcode: selectedShop.postalcode,
-                    tel: selectedShop.tel,
-                    openTime: selectedShop.openTime,
-                    closeTime: selectedShop.closeTime,
-                    isActive: selectedShop.isActive
-                },
-                bookDate: dayjs(bookingDate).format("YYYY/MM/DD HH:mm"),
-                reservationID: ''
-            };
-
             if (status === 'authenticated' && session?.user?.token) {
                 const reservDate = dayjs(bookingDate).format("YYYY-MM-DD HH:mm");
 
-                const result = await addReservations(session.user.token, selectedShop._id, reservDate);
+                await addReservations(session.user.token, selectedShop._id, reservDate);
+                
+                setSuccess(true);
 
-                if (result && result.data && result.data._id) {
-                    bookingItem.reservationID = result.data._id;
-                }
+                setTimeout(() => {
+                    router.push('/profile');
+                }, 2000);
             }
-
-            dispatch(addBooking(bookingItem));
-            setSuccess(true);
-
-            setTimeout(() => {
-                if (status !== 'authenticated') {
-                    setNameLastname('');
-                    setContact('');
-                }
-                setVenue('');
-                setBookingDate(null);
-                setSuccess(false);
-
-                router.push('/profile');
-            }, 2000);
         } catch (error) {
             console.error("Booking error:", error);
             if (error instanceof Error) {
@@ -222,7 +185,7 @@ export default function BookingPage() {
                             className="mb-6 animate-fadeDown"
                             icon={<FaCheck />}
                         >
-                            Booking successful ! Redirecting to your profile...
+                            Booking successful! Redirecting to your profile...
                         </Alert>
                     )
                 }
