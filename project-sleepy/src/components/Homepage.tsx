@@ -21,7 +21,7 @@ export default function Homepage() {
           </h1>
           <p className="mb-6 max-w-md text-lg">
             Discover premium massage services tailored to your needs.
-            Book your perfect relaxation experience today !
+            Book your perfect relaxation experience today!
           </p>
           <div className="flex flex-wrap gap-4">
             <Link href="/massageshop" className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg shadow-lg font-semibold flex items-center gap-2 hover:from-orange-600 hover:to-orange-700 transition-colors">
