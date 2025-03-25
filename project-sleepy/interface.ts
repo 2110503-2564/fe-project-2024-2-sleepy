@@ -7,7 +7,7 @@ export interface MSItem {
   postalcode: string,
   tel: string,
   openTime: string,
-  closeTime: number,
+  closeTime: string,
   isActive: boolean
 }
 
