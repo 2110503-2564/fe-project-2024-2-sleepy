@@ -27,7 +27,6 @@ export default function Banner({ text1, text2 }: { text1: string, text2: string 
                 </button>
             </div>
 
-            <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white to-transparent"></div>
         </div>
     );
 }
