@@ -30,7 +30,18 @@ export interface MSJson {
 export interface BookingItem {
   nameLastname: string;
   tel: string;
-  MassageShop: string;
+  MassageShop: {
+    _id: string,
+    name: string,
+    address: string,
+    district: string,
+    province: string,
+    postalcode: string,
+    tel: string,
+    openTime: string,
+    closeTime: number,
+    isActive: boolean
+  }
   bookDate: string;
   reservationID: string;
 }

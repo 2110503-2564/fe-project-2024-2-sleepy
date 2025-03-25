@@ -128,7 +128,18 @@ export default function BookingPage() {
             const bookingItem: BookingItem = {
                 nameLastname: nameLastname.trim(),
                 tel: contact.replace(/-/g, ''),
-                MassageShop: selectedShop._id,
+                MassageShop: {
+                    _id: selectedShop._id,
+                    name: selectedShop.name,
+                    address: selectedShop.address,
+                    district: selectedShop.district,
+                    province: selectedShop.province,
+                    postalcode: selectedShop.postalcode,
+                    tel: selectedShop.tel,
+                    openTime: selectedShop.openTime,
+                    closeTime: selectedShop.closeTime,
+                    isActive: selectedShop.isActive
+                },
                 bookDate: dayjs(bookingDate).format("YYYY/MM/DD HH:mm"),
                 reservationID: ''
             };

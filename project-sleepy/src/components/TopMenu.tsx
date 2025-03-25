@@ -10,8 +10,6 @@ export default function Topmenu() {
   const { data: session } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // console.log(session);
-
   return (
     <>
       <div className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-4 shadow-lg z-50 fixed top-0 left-0 right-0">
@@ -19,13 +17,14 @@ export default function Topmenu() {
           <div className="hidden md:flex items-center justify-between">
             <div className="flex items-center gap-6">
               <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
-                <Image
-                  src="/logo/logo.jpg"
-                  alt="logo"
-                  width={50}
-                  height={50}
-                  className="w-12 h-12 rounded-full border-2 border-white shadow-md"
-                />
+                <div className="relative w-12 h-12 rounded-full border-4 border-white shadow-md overflow-hidden bg-black">
+                  <Image
+                    src="/logo/logo.jpg"
+                    alt="logo"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
                 <span className="text-xl font-bold">TIME FOR RELAX!</span>
               </Link>
               <div className="flex items-center gap-4">
@@ -61,13 +60,14 @@ export default function Topmenu() {
 
           <div className="flex md:hidden items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-              <Image
-                src="/logo/logo.jpg"
-                alt="logo"
-                width={40}
-                height={40}
-                className="w-10 h-10 rounded-full border-2 border-white"
-              />
+              <div className="relative w-10 h-10 rounded-full border-3 border-white shadow-md overflow-hidden bg-white">
+                <Image
+                  src="/logo/logo.jpg"
+                  alt="logo"
+                  fill
+                  className="object-contain"
+                />
+              </div>
               <span className="text-lg font-bold">TIME FOR RELAX!</span>
             </Link>
 

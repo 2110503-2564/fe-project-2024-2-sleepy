@@ -3,17 +3,29 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaEnvelope, FaPhone, FaIdCard, FaUserTag, FaCalendarAlt, FaTrash } from 'react-icons/fa';
+import { FaEnvelope, FaPhone, FaIdCard, FaUserTag, FaCalendarAlt, FaTrash, FaEdit, FaTimes, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
 import { useAppSelector } from '@/redux/store';
 import { useDispatch } from 'react-redux';
-import { removeBooking } from '@/redux/features/bookSlice';
+import { removeBooking, addBooking } from '@/redux/features/bookSlice';
 import { BookingItem } from '../../../interface';
 import removeReservation from '@/libs/removeReservation';
+import updateReservation from '@/libs/updateReservation';
+import { Dialog, DialogContent, DialogTitle, Button, CircularProgress } from '@mui/material';
+import DateReserve from '@/components/DateReserve';
+import dayjs, { Dayjs } from 'dayjs';
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
   const [cancellingId, setCancellingId] = useState<number | null>(null);
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<BookingItem | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [newBookingDate, setNewBookingDate] = useState<Dayjs | null>(null);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [updateError, setUpdateError] = useState<string | null>(null);
+
   const bookings = useAppSelector((state) => state.bookSlice.bookItems);
   const dispatch = useDispatch();
 
@@ -29,7 +41,6 @@ export default function ProfilePage() {
     try {
       if (status === 'authenticated' && session?.user?.token) {
         const reservationID = booking.reservationID;
-
         await removeReservation(session.user.token, reservationID);
       }
 
@@ -38,6 +49,63 @@ export default function ProfilePage() {
       console.error("Error cancelling booking:", error);
     } finally {
       setCancellingId(null);
+    }
+  };
+
+  const openUpdateDialog = (booking: BookingItem, index: number) => {
+    setSelectedBooking(booking);
+    setSelectedIndex(index);
+    setNewBookingDate(dayjs(booking.bookDate, "YYYY/MM/DD HH:mm"));
+    setIsDialogOpen(true);
+    setUpdateError(null);
+  };
+
+  const closeUpdateDialog = () => {
+    setIsDialogOpen(false);
+    setSelectedBooking(null);
+    setSelectedIndex(null);
+    setNewBookingDate(null);
+    setUpdateError(null);
+  };
+
+  const handleDateChange = (value: Dayjs) => {
+    setNewBookingDate(value);
+  };
+
+  const handleUpdateBooking = async () => {
+    if (!selectedBooking || !newBookingDate || selectedIndex === null) {
+      return;
+    }
+
+    setUpdateLoading(true);
+    setUpdateError(null);
+
+    try {
+      if (status === 'authenticated' && session?.user?.token) {
+        const reservDate = newBookingDate.format("YYYY-MM-DD HH:mm");
+        const reservationID = selectedBooking.reservationID;
+
+        await updateReservation(session.user.token, reservationID, reservDate);
+
+        const updatedBooking: BookingItem = {
+          ...selectedBooking,
+          bookDate: reservDate
+        };
+
+        dispatch(addBooking(updatedBooking));
+
+        closeUpdateDialog();
+        setUpdatingId(selectedIndex);
+
+        setTimeout(() => {
+          setUpdatingId(null);
+        }, 1000);
+      }
+    } catch (error) {
+      console.error("Error updating booking:", error);
+      setUpdateError("Failed to update booking. Please try again.");
+    } finally {
+      setUpdateLoading(false);
     }
   };
 
@@ -75,13 +143,12 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-5xl mx-auto">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          {/* Profile Header */}
           <div className="relative h-48 bg-gradient-to-r from-orange-500 to-orange-600">
             <div className="absolute left-8 -bottom-16">
               <div className="bg-white p-2 rounded-full shadow-lg">
                 <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white">
                   <Image
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(userData?.name || 'User')}&background=f97316&color=ffffff&size=128`}
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(userData?.name || 'User')}&background=000001&color=ffffff&size=128`}
                     alt="Profile"
                     fill
                     className="object-cover"
@@ -91,7 +158,6 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Profile Info */}
           <div className="pt-20 pb-8 px-8">
             <h1 className="text-3xl font-bold text-gray-800">{userData?.name || 'User'}</h1>
             <p className="text-orange-500 font-medium mt-1 mb-6">
@@ -154,46 +220,74 @@ export default function ProfilePage() {
                           <div
                             key={index}
                             className={`bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all 
-                              ${cancellingId === index ? 'opacity-50 scale-95' : ''}`}
+                              ${(cancellingId === index || updatingId === index) ? 'opacity-50 scale-95' : ''}`}
                           >
                             <div className="flex justify-between items-start">
                               <div>
-                                <h3 className="font-semibold text-gray-800">{booking.MassageShop}</h3>
-                                <div className="flex items-center mt-1 text-sm text-gray-500">
-                                  <FaCalendarAlt className="mr-2 text-orange-500" />
-                                  <span>{booking.bookDate}</span>
+                                <h3 className="font-semibold text-gray-800 text-lg">{booking.MassageShop.name}</h3>
+                                <div className="text-sm text-gray-500 mt-2">
+                                  <div className="flex items-center">
+                                    <FaMapMarkerAlt className="mr-2 text-orange-500" />
+                                    <span>{booking.MassageShop.address}, {booking.MassageShop.district}, {booking.MassageShop.province}</span>
+                                  </div>
+
+                                  <div className="flex items-center mt-1">
+                                    <FaPhone className="mr-2 text-orange-500" />
+                                    <span>{booking.MassageShop.tel}</span>
+                                  </div>
+
+                                  <div className="flex items-center mt-1">
+                                    <FaClock className="mr-2 text-orange-500" />
+                                    <span>Open: {booking.MassageShop.openTime} - Close: {booking.MassageShop.closeTime}</span>
+                                  </div>
+
+                                  <div className="flex items-center mt-2 font-medium">
+                                    <FaCalendarAlt className="mr-2 text-orange-500" />
+                                    <span>Appointment: {booking.bookDate}</span>
+                                    {updatingId === index && (
+                                      <span className="ml-2 text-green-500 text-xs animate-pulse">
+                                        Updated successfully!
+                                      </span>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                               <div className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded">
                                 Active
                               </div>
                             </div>
-                            <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
-                              <div className="text-sm text-gray-600">
-                                <span className="block">{booking.nameLastname}</span>
-                                <span className="block">{booking.tel}</span>
+
+                            <div className="mt-3 pt-3 border-t border-gray-100 flex justify-end">
+                              <div className="flex space-x-2">
+                                <button
+                                  className="flex items-center gap-1 px-3 py-1 text-xs bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-600 rounded transition-colors"
+                                  onClick={() => openUpdateDialog(booking, index)}
+                                  disabled={cancellingId === index || updatingId === index}
+                                >
+                                  <FaEdit size={12} /> Change Date
+                                </button>
+                                <button
+                                  className="flex items-center gap-1 px-3 py-1 text-xs bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600 rounded transition-colors"
+                                  onClick={() => handleCancelBooking(booking, index)}
+                                  disabled={cancellingId === index || updatingId === index}
+                                >
+                                  {
+                                    cancellingId === index ? (
+                                      <span className="flex items-center">
+                                        <svg className="animate-spin -ml-1 mr-2 h-3 w-3 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Cancelling...
+                                      </span>
+                                    ) : (
+                                      <>
+                                        <FaTrash size={12} /> Cancel Booking
+                                      </>
+                                    )
+                                  }
+                                </button>
                               </div>
-                              <button
-                                className="flex items-center gap-1 px-2 py-1 text-xs bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600 rounded transition-colors"
-                                onClick={() => handleCancelBooking(booking, index)}
-                                disabled={cancellingId === index}
-                              >
-                                {
-                                  cancellingId === index ? (
-                                    <span className="flex items-center">
-                                      <svg className="animate-spin -ml-1 mr-2 h-3 w-3 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                      </svg>
-                                      Cancelling...
-                                    </span>
-                                  ) : (
-                                    <>
-                                      <FaTrash size={12} /> Cancel
-                                    </>
-                                  )
-                                }
-                              </button>
                             </div>
                           </div>
                         ))
@@ -218,6 +312,77 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      <Dialog
+        open={isDialogOpen}
+        onClose={closeUpdateDialog}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+          <div className="flex justify-between items-center">
+            <span>Update Booking Date</span>
+            <button
+              onClick={closeUpdateDialog}
+              className="text-white hover:text-gray-200 transition-colors"
+            >
+              <FaTimes />
+            </button>
+          </div>
+        </DialogTitle>
+        <DialogContent className="mt-4 pb-6">
+          <div className="py-4">
+            <p className="text-gray-700 mb-4">
+              Please select a new date and time for your booking at <span className="font-bold">{selectedBooking?.MassageShop.name}</span>
+            </p>
+
+            {updateError && (
+              <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg">
+                {updateError}
+              </div>
+            )}
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">Current Date and Time:</label>
+              <div className="p-3 bg-gray-50 rounded-lg text-gray-700">
+                {selectedBooking?.bookDate}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-gray-700 font-medium mb-2">New Date and Time:</label>
+              <div className="w-full">
+                <DateReserve onDateChange={handleDateChange} />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <Button
+                variant="outlined"
+                onClick={closeUpdateDialog}
+                className="text-gray-500 border-gray-300 hover:bg-gray-50"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleUpdateBooking}
+                disabled={!newBookingDate || updateLoading}
+                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white"
+              >
+                {updateLoading ? (
+                  <>
+                    <CircularProgress size={20} color="inherit" className="mr-2" />
+                    Updating...
+                  </>
+                ) : (
+                  'Update Booking'
+                )}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
