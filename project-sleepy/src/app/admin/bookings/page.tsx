@@ -344,72 +344,78 @@ export default function AdminBookingsPage() {
                                         }
                                     </tbody>
                                 </table>
-                                {filteredReservations.length === 0 && (
-                                    <div className="text-center py-8 text-gray-500">
-                                        No bookings found
-                                    </div>
-                                )}
+                                {
+                                    filteredReservations.length === 0 && (
+                                        <div className="text-center py-8 text-gray-500">
+                                            No bookings found
+                                        </div>
+                                    )
+                                }
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {filteredReservations.map(reservation => (
-                                    <div
-                                        key={reservation._id}
-                                        className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-all"
-                                    >
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div>
-                                                <h3 className="text-lg font-semibold text-gray-800">
-                                                    {reservation.massageShop.name}
-                                                </h3>
-                                                <p className="text-sm text-gray-500 flex items-center gap-2">
-                                                    <FaMapMarkerAlt className="text-orange-500" />
-                                                    {reservation.massageShop.province}
-                                                </p>
+                                {
+                                    filteredReservations.map(reservation => (
+                                        <div
+                                            key={reservation._id}
+                                            className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-all"
+                                        >
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div>
+                                                    <h3 className="text-lg font-semibold text-gray-800">
+                                                        {reservation.massageShop.name}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-500 flex items-center gap-2">
+                                                        <FaMapMarkerAlt className="text-orange-500" />
+                                                        {reservation.massageShop.province}
+                                                    </p>
+                                                </div>
+                                                <div className="flex space-x-2">
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedReservation(reservation);
+                                                            setNewBookingDate(dayjs(reservation.reservDate));
+                                                            setIsUpdateDialogOpen(true);
+                                                        }}
+                                                        className="text-blue-500 hover:text-blue-600 transition-colors"
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedReservation(reservation);
+                                                            setIsDeleteDialogOpen(true);
+                                                        }}
+                                                        className="text-red-500 hover:text-red-600 transition-colors"
+                                                    >
+                                                        <FaTrash />
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div className="flex space-x-2">
-                                                <button
-                                                    onClick={() => {
-                                                        setSelectedReservation(reservation);
-                                                        setNewBookingDate(dayjs(reservation.reservDate));
-                                                        setIsUpdateDialogOpen(true);
-                                                    }}
-                                                    className="text-blue-500 hover:text-blue-600 transition-colors"
-                                                >
-                                                    <FaEdit />
-                                                </button>
-                                                <button
-                                                    onClick={() => {
-                                                        setSelectedReservation(reservation);
-                                                        setIsDeleteDialogOpen(true);
-                                                    }}
-                                                    className="text-red-500 hover:text-red-600 transition-colors"
-                                                >
-                                                    <FaTrash />
-                                                </button>
+                                            <div className="space-y-2 mb-4">
+                                                <div className="flex items-center gap-2 text-gray-600">
+                                                    <FaCalendar className="text-orange-500" />
+                                                    <span>{dayjs(reservation.reservDate).format('YYYY-MM-DD HH:mm')}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-gray-600">
+                                                    <FaPhone className="text-orange-500" />
+                                                    <span>{reservation.massageShop.tel}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-gray-600">
+                                                    <FaUser className="text-orange-500" />
+                                                    <span>{reservation.user}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="space-y-2 mb-4">
-                                            <div className="flex items-center gap-2 text-gray-600">
-                                                <FaCalendar className="text-orange-500" />
-                                                <span>{dayjs(reservation.reservDate).format('YYYY-MM-DD HH:mm')}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-gray-600">
-                                                <FaPhone className="text-orange-500" />
-                                                <span>{reservation.massageShop.tel}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-gray-600">
-                                                <FaUser className="text-orange-500" />
-                                                <span>{reservation.user}</span>
-                                            </div>
+                                    ))
+                                }
+                                {
+                                    filteredReservations.length === 0 && (
+                                        <div className="col-span-full text-center py-8 text-gray-500">
+                                            No bookings found
                                         </div>
-                                    </div>
-                                ))}
-                                {filteredReservations.length === 0 && (
-                                    <div className="col-span-full text-center py-8 text-gray-500">
-                                        No bookings found
-                                    </div>
-                                )}
+                                    )
+                                }
                             </div>
                         )}
                     </div>
