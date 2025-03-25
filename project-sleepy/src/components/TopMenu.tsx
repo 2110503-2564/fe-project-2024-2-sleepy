@@ -4,11 +4,12 @@ import TopmenuItem from "./TopMenuItem";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { FaUser, FaSignOutAlt, FaSignInAlt, FaBars, FaTimes } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaSignInAlt, FaBars, FaTimes, FaUserShield } from "react-icons/fa";
 
 export default function Topmenu() {
   const { data: session } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isAdmin = session?.user?.data?.role === 'admin';
 
   return (
     <>
@@ -30,6 +31,11 @@ export default function Topmenu() {
               <div className="flex items-center gap-4">
                 <TopmenuItem title="Home" pageRef="/" />
                 <TopmenuItem title="Massage Shops" pageRef="/massageshop" />
+                {
+                  isAdmin && (
+                    <TopmenuItem title="Admin Panel" pageRef="/admin" />
+                  )
+                }
               </div>
             </div>
 
@@ -50,7 +56,7 @@ export default function Topmenu() {
               {
                 session && (
                   <Link href="/profile" className="flex items-center gap-2 bg-white text-orange-600 px-3 py-2 rounded-lg hover:bg-orange-100 transition-colors">
-                    <FaUser />
+                    {isAdmin ? <FaUserShield /> : <FaUser />}
                     <span className="font-medium">{session?.user?.data.name}</span>
                   </Link>
                 )
@@ -88,6 +94,13 @@ export default function Topmenu() {
                 <Link href="/massageshop" className="text-white hover:bg-white/20 px-3 py-2 rounded-lg transition-colors">
                   Massage Shops
                 </Link>
+                {
+                  isAdmin && (
+                    <Link href="/admin" className="text-white hover:bg-white/20 px-3 py-2 rounded-lg transition-colors">
+                      Admin Panel
+                    </Link>
+                  )
+                }
                 {
                   session ? (
                     <>
