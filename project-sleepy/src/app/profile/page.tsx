@@ -6,7 +6,7 @@ import { FaPhone, FaCalendarAlt, FaTrash, FaEdit, FaTimes, FaMapMarkerAlt, FaClo
 import removeReservation from '@/libs/removeReservation';
 import updateReservation from '@/libs/updateReservation';
 import getReservations from '@/libs/getReservations';
-import getMassageShops from '@/libs/getMassageShops';
+import getMassageShop from '@/libs/getMassageShop';
 import { Dialog, DialogContent, DialogTitle, Button, CircularProgress } from '@mui/material';
 import DateReserve from '@/components/DateReserve';
 import dayjs, { Dayjs } from 'dayjs';
@@ -43,13 +43,12 @@ export default function ProfilePage() {
   const [apiLoading, setApiLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [massageShops, setMassageShops] = useState<MSItem[]>([]);
-  const [shopDetailsLoading, setShopDetailsLoading] = useState(false);
+  const [shopDetailsCache, setShopDetailsCache] = useState<{ [key: string]: MSItem }>({});
+  const [loadingShopIds, setLoadingShopIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user?.data) {
       fetchReservations();
-      fetchAllMassageShops();
     }
 
     if (status !== 'loading') {
@@ -57,18 +56,44 @@ export default function ProfilePage() {
     }
   }, [status, session]);
 
-  const fetchAllMassageShops = async () => {
-    setShopDetailsLoading(true);
+  useEffect(() => {
+    if (apiReservations.length > 0) {
+      apiReservations.forEach(reservation => {
+        fetchShopDetails(reservation.massageShop._id);
+      });
+    }
+  }, [apiReservations]);
+
+  const fetchShopDetails = async (shopId: string) => {
+    if (shopDetailsCache[shopId]) {
+      return shopDetailsCache[shopId];
+    }
+
+    if (loadingShopIds.includes(shopId)) {
+      return null;
+    }
+
+    setLoadingShopIds(prev => [...prev, shopId]);
+
     try {
-      const response = await getMassageShops(1);
+      const response = await getMassageShop(shopId);
       if (response && response.data) {
-        setMassageShops(response.data);
+        const shopDetails = response.data;
+
+        setShopDetailsCache(prev => ({
+          ...prev,
+          [shopId]: shopDetails
+        }));
+
+        return shopDetails;
       }
     } catch (error) {
-      console.error("Error fetching massage shops:", error);
+      console.error(`Error fetching shop details for ID ${shopId}:`, error);
     } finally {
-      setShopDetailsLoading(false);
+      setLoadingShopIds(prev => prev.filter(id => id !== shopId));
     }
+
+    return null;
   };
 
   const fetchReservations = async () => {
@@ -175,7 +200,19 @@ export default function ProfilePage() {
   };
 
   const getFullShopDetails = (shopId: string) => {
-    return massageShops.find(shop => shop._id === shopId) || null;
+    if (shopDetailsCache[shopId]) {
+      return shopDetailsCache[shopId];
+    }
+
+    if (!loadingShopIds.includes(shopId)) {
+      fetchShopDetails(shopId);
+    }
+
+    return null;
+  };
+
+  const isShopLoading = (shopId: string) => {
+    return loadingShopIds.includes(shopId);
   };
 
   if (loading) {
@@ -256,6 +293,7 @@ export default function ProfilePage() {
                       {
                         apiReservations.map((reservation) => {
                           const fullShopDetails = getFullShopDetails(reservation.massageShop._id);
+                          const isLoading = isShopLoading(reservation.massageShop._id);
 
                           return (
                             <div
@@ -297,7 +335,7 @@ export default function ProfilePage() {
                                             <span>{reservation.massageShop.tel}</span>
                                           </div>
 
-                                          {shopDetailsLoading && (
+                                          {isLoading && (
                                             <div className="text-xs text-gray-400 mt-1 italic">Loading shop details...</div>
                                           )}
                                         </>

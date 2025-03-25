@@ -13,6 +13,6 @@ export default async function addReservations(token: string, massageShopID: stri
     if (!response.ok) {
         throw new Error('Failed to add reservation');
     }
-    
+
     return await response.json();
 }

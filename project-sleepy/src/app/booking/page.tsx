@@ -18,7 +18,6 @@ export default function BookingPage() {
     const router = useRouter();
     const urlParams = useSearchParams();
     const shopId = urlParams.get('shop') || '';
-
     const [massageShops, setMassageShops] = useState<MSItem[]>([]);
     const [nameLastname, setNameLastname] = useState('');
     const [contact, setContact] = useState('');
@@ -124,7 +123,7 @@ export default function BookingPage() {
                 const reservDate = dayjs(bookingDate).format("YYYY-MM-DD HH:mm");
 
                 await addReservations(session.user.token, selectedShop._id, reservDate);
-                
+
                 setSuccess(true);
 
                 setTimeout(() => {

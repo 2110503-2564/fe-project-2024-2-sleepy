@@ -10,6 +10,6 @@ export default async function removeReservation(token: string, reservID: string)
     if (!response.ok) {
         throw new Error('Failed to remove reservation');
     }
-    
+
     return await response.json();
 }
